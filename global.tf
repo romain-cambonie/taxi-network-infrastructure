@@ -1,10 +1,9 @@
 locals {
   product_information = {
     context : {
-      project    = "cartographie_nationale"
-      layer      = "infrastructure"
-      service    = "network"
-      start_date = "2022-04-01"
+      product    = var.product
+      service    = var.service
+      start_date = "2023-01-31"
       end_date   = "unknown"
     }
     purpose : {
@@ -12,33 +11,28 @@ locals {
       service_class     = "bronze"
     }
     organization : {
-      client = "anct"
+      client = "taxi-aymeric"
     }
     stakeholders : {
-      business_owner  = "celestin.leroux@beta.gouv.fr"
-      technical_owner = "marc.gavanier@beta.gouv.fr"
-      approver        = "marc.gavanier@beta.gouv.fr"
+      business_owner  = "romain-cambonie@gmail.com"
+      technical_owner = "romain-cambonie@gmail.com"
+      approver        = "romain-cambonie@gmail.com"
       creator         = "terraform"
-      team            = "cartographie-nationale"
+      team            = "romain-cambonie"
     }
   }
 }
 
 locals {
-  projectTitle = title(replace(local.product_information.context.project, "_", " "))
-  layerTitle   = title(replace(local.product_information.context.layer, "_", " "))
+  productTitle = title(replace(local.product_information.context.product, "_", " "))
   serviceTitle = title(replace(local.product_information.context.service, "_", " "))
-  domainNames  = ["cartographie.societenumerique.gouv.fr"]
+  domainNames  = ["tribetaxi.com"]
 }
 
 locals {
   service = {
-    cartographie_nationale = {
-      name = "cartographie_nationale"
-      api = {
-        name  = "api"
-        title = "api"
-      }
+    taxi_aymeric = {
+      name = var.service
       client = {
         name  = "client"
         title = "client"

@@ -2,7 +2,7 @@
 
 ## À propos
 
-Network infrastructure décrit par le code l'infrastructure à provisionner pour les éléments réseaux de la Cartographie Nationale.
+Network infrastructure décrit par le code l'infrastructure à provisionner pour les éléments réseaux de Taxi Aymeric.
 
 > Ce dépôt n'est pas utile pour faire fonctionner la Cartographie Nationale en local.
 
@@ -83,19 +83,26 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
 #### CI
 
 - [Github Actions](https://docs.github.com/en/actions) est l'outil d'intégration et de déploiement continu intégré à GitHub
-  - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/anct-cartographie-nationale/network-infrastructure/actions/)
+  - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/romain-cambonie/taxi-network-infrastructure/actions/)
 - Secrets du dépôt :
   - `TF_API_TOKEN` : Le token d'api Terraform Cloud de l'équipe Cartographie Nationale qui permet à la CI d'opérer des actions sur Terraform Cloud
 
 #### Déploiement
 
-- [Terraform Cloud](https://www.clever-cloud.com/) est la plateforme proposée par HasiCorp pour administrer les modifications d'infrastructure
-  - Organisation : [cartographie-nationale](https://app.terraform.io/app/cartographie-nationale/workspaces)
-  - Workspaces : `network-*`
-    - [network-production](https://app.terraform.io/app/cartographie-nationale/workspaces/network-production)
 - [AWS](https://aws.amazon.com/) est la plateforme de services Cloud proposée par Amazon.
-  - Utilisateur : `cartographie-nationale.network.infrastructure`
+  - Utilisateur : `taxi-aymeric.network.infrastructure`
   - Groupe : `network.deployer`
+- [Terraform Cloud](https://www.clever-cloud.com/) est la plateforme proposée par HasiCorp pour administrer les modifications d'infrastructure
+  - Organisation : [taxi-aymeric](https://app.terraform.io/app/taxi-aymeric/workspaces)
+  - Workspaces : `network-*`
+    - [network-production](https://app.terraform.io/app/taxi-aymeric/workspaces/network-production)
+  - Variables
+    - `AWS_SECRET_ACCESS_KEY`
+      - Value : Sensitive - write only
+      - Category : env
+    - `AWS_ACCESS_KEY_ID`
+      - Value : Sensitive - write only
+      - Category : env
 
 ## Licence
 

@@ -1,16 +1,16 @@
 data "aws_s3_bucket" "client" {
-  bucket = replace("${local.product_information.context.project}_${local.service.cartographie_nationale.client.name}", "_", "-")
+  bucket = replace("${local.product_information.context.product}_${local.service.taxi_aymeric.client.name}", "_", "-")
 }
 
 resource "aws_cloudfront_origin_access_identity" "client" {
-  comment = "S3 cloudfront origin access identity for ${local.service.cartographie_nationale.client.title} service in ${local.projectTitle}"
+  comment = "S3 cloudfront origin access identity for ${local.service.taxi_aymeric.client.title} service in ${local.productTitle}"
 }
 
 locals {
-  s3_origin_id = "${local.service.cartographie_nationale.client.name}_s3"
+  s3_origin_id = "${local.service.taxi_aymeric.client.name}_s3"
 }
 
-resource "aws_cloudfront_distribution" "cartographie_nationale" {
+resource "aws_cloudfront_distribution" "taxi_aymeric" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
