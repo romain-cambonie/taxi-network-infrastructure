@@ -1,5 +1,5 @@
 data "aws_s3_bucket" "client" {
-  bucket = replace("${local.product_information.context.product}_${local.service.taxi_aymeric.client.name}", "_", "-")
+  bucket = replace("${local.product_information.context.product}_${local.service.taxi_aymeric.client.name}_bucket", "_", "-")
 }
 
 //resource "aws_cloudfront_origin_access_identity" "client" {
