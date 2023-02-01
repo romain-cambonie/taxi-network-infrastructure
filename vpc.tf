@@ -4,11 +4,11 @@ resource "aws_vpc" "taxi_aymeric_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
-  tags = local.tags
+  tags = merge(local.tags, { "Name" = "taxi-aymeric-vpc" })
 }
 
 resource "aws_security_group" "security_group_fargate" {
-  name = "allow-https"
+  name = "allow-https-fargate"
 
   description = "Allow TLS inbound traffic"
   vpc_id      = aws_vpc.taxi_aymeric_vpc.id
@@ -30,7 +30,7 @@ resource "aws_security_group" "security_group_fargate" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
-  tags = local.tags
+  tags = merge(local.tags, { "Name" = "security-group-https-fargate" })
 
   lifecycle {
     # Necessary if changing 'name' or 'name_prefix' properties.
@@ -55,7 +55,7 @@ resource "aws_subnet" "public_1" {
   vpc_id                  = aws_vpc.taxi_aymeric_vpc.id
   map_public_ip_on_launch = true
   cidr_block              = "10.0.0.0/24"
-  tags                    = local.tags
+  tags                    = merge(local.tags, { "Name" = "public_1" })
 }
 
 resource "aws_subnet" "private_1" {
@@ -63,7 +63,7 @@ resource "aws_subnet" "private_1" {
   vpc_id                  = aws_vpc.taxi_aymeric_vpc.id
   map_public_ip_on_launch = false
   cidr_block              = "10.0.1.0/24"
-  tags                    = local.tags
+  tags                    = merge(local.tags, { "Name" = "private_1" })
 }
 
 resource "aws_subnet" "public_2" {
@@ -71,7 +71,7 @@ resource "aws_subnet" "public_2" {
   vpc_id                  = aws_vpc.taxi_aymeric_vpc.id
   map_public_ip_on_launch = true
   cidr_block              = "10.0.2.0/24"
-  tags                    = local.tags
+  tags                    = merge(local.tags, { "Name" = "public_2" })
 }
 
 resource "aws_subnet" "private_2" {
@@ -79,7 +79,7 @@ resource "aws_subnet" "private_2" {
   vpc_id                  = aws_vpc.taxi_aymeric_vpc.id
   map_public_ip_on_launch = false
   cidr_block              = "10.0.3.0/24"
-  tags                    = local.tags
+  tags                    = merge(local.tags, { "Name" = "private_2" })
 }
 
 # Create route-tables
