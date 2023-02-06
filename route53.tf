@@ -36,51 +36,50 @@ resource "aws_acm_certificate" "acm_certificate" {
   tags = local.tags
 }
 
-//resource "aws_route53_record" "certificate_validation_main" {
-//  for_each        = toset(local.domainNames)
-//  name            = sort(aws_acm_certificate.acm_certificate.domain_validation_options[*].resource_record_name)[0]
-//  depends_on      = [aws_acm_certificate.acm_certificate]
-//  zone_id         = aws_route53_zone.taxi_aymeric[each.key].id
-//  type            = "CNAME"
-//  ttl             = "300"
-//  records         = [sort(aws_acm_certificate.acm_certificate.domain_validation_options[*].resource_record_value)[0]]
-//  allow_overwrite = true
-//}
-//
-//resource "aws_acm_certificate_validation" "certification_main" {
-//  for_each        = toset(local.domainNames)
-//  provider        = aws.us-east-1
-//  certificate_arn = aws_acm_certificate.acm_certificate.arn
-//  validation_record_fqdns = [
-//    aws_route53_record.certificate_validation_main[each.key].fqdn,
-//  ]
-//  timeouts {
-//    create = "48h"
-//  }
-//}
+resource "aws_route53_record" "certificate_validation_main" {
+  for_each        = toset(local.domainNames)
+  name            = sort(aws_acm_certificate.acm_certificate.domain_validation_options[*].resource_record_name)[0]
+  depends_on      = [aws_acm_certificate.acm_certificate]
+  zone_id         = aws_route53_zone.taxi_aymeric[each.key].id
+  type            = "CNAME"
+  ttl             = "300"
+  records         = [sort(aws_acm_certificate.acm_certificate.domain_validation_options[*].resource_record_value)[0]]
+  allow_overwrite = true
+}
 
-//resource "aws_route53_record" "taxi_aymeric_record_ipv4" {
-//  for_each = toset(local.domainNames)
-//  name     = aws_route53_zone.taxi_aymeric[each.key].name
-//  zone_id  = aws_route53_zone.taxi_aymeric[each.key].zone_id
-//  type     = "A"
-//
-//  alias {
-//    name                   = aws_cloudfront_distribution.taxi_aymeric.domain_name
-//    zone_id                = aws_cloudfront_distribution.taxi_aymeric.hosted_zone_id
-//    evaluate_target_health = false
-//  }
-//}
-//
-//resource "aws_route53_record" "driver_record_ipv6" {
-//  for_each = toset(local.domainNames)
-//  name     = aws_route53_zone.taxi_aymeric[each.key].name
-//  zone_id  = aws_route53_zone.taxi_aymeric[each.key].zone_id
-//  type     = "AAAA"
-//
-//  alias {
-//    name                   = aws_cloudfront_distribution.taxi_aymeric.domain_name
-//    zone_id                = aws_cloudfront_distribution.taxi_aymeric.hosted_zone_id
-//    evaluate_target_health = false
-//  }
-//}
+resource "aws_acm_certificate_validation" "certification_main" {
+  for_each        = toset(local.domainNames)
+  provider        = aws.us-east-1
+  certificate_arn = aws_acm_certificate.acm_certificate.arn
+  validation_record_fqdns = [
+    aws_route53_record.certificate_validation_main[each.key].fqdn,
+  ]
+  timeouts {
+    create = "48h"
+  }
+}
+resource "aws_route53_record" "taxi_aymeric_record_ipv4" {
+  for_each = toset(local.domainNames)
+  name     = aws_route53_zone.taxi_aymeric[each.key].name
+  zone_id  = aws_route53_zone.taxi_aymeric[each.key].zone_id
+  type     = "A"
+
+  alias {
+    name                   = aws_cloudfront_distribution.taxi_aymeric.domain_name
+    zone_id                = aws_cloudfront_distribution.taxi_aymeric.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "driver_record_ipv6" {
+  for_each = toset(local.domainNames)
+  name     = aws_route53_zone.taxi_aymeric[each.key].name
+  zone_id  = aws_route53_zone.taxi_aymeric[each.key].zone_id
+  type     = "AAAA"
+
+  alias {
+    name                   = aws_cloudfront_distribution.taxi_aymeric.domain_name
+    zone_id                = aws_cloudfront_distribution.taxi_aymeric.hosted_zone_id
+    evaluate_target_health = false
+  }
+}
