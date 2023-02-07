@@ -26,7 +26,7 @@ locals {
 locals {
   productTitle = title(replace(local.product_information.context.product, "_", " "))
   serviceTitle = title(replace(local.product_information.context.service, "_", " "))
-  domainNames  = ["tribetaxi.com"]
+  domainName   = "taxi-gestion.com"
 }
 
 locals {

@@ -16,7 +16,7 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
 
-  aliases = local.domainNames
+  aliases = [local.domainName]
 
   custom_error_response {
     error_caching_min_ttl = 7200
@@ -68,6 +68,7 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
 
   tags = local.tags
 }
+
 data "aws_iam_policy_document" "client_s3_policy" {
   statement {
     actions   = ["s3:GetObject"]
@@ -89,6 +90,7 @@ data "aws_iam_policy_document" "client_s3_policy" {
     }
   }
 }
+
 resource "aws_s3_bucket_policy" "client" {
   bucket = data.aws_s3_bucket.client.id
   policy = data.aws_iam_policy_document.client_s3_policy.json
