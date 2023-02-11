@@ -99,7 +99,7 @@ resource "aws_route53_record" "driver_record_ipv6" {
 }
 
 resource "aws_route53_record" "api_record" {
-  name    = "${aws_route53_zone.hosting_zone.name}/api"
+  name    = "api.${aws_route53_zone.hosting_zone.name}"
   zone_id = aws_route53_zone.hosting_zone.zone_id
   type    = "A"
 

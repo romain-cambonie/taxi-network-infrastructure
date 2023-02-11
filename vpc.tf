@@ -7,35 +7,47 @@ resource "aws_vpc" "taxi_aymeric_vpc" {
   tags = merge(local.tags, { "Name" = "taxi-aymeric-vpc" })
 }
 
-resource "aws_security_group" "security_group_fargate" {
-  name = "allow-https-fargate"
-
-  description = "Allow TLS inbound traffic"
+resource "aws_security_group" "security_group_fargate_api" {
+  name        = "security-group-fargate-api"
+  description = "Allow http and https inbound traffic"
   vpc_id      = aws_vpc.taxi_aymeric_vpc.id
 
-  ingress {
-    description = "Allow incoming HTTPS traffic"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.taxi_aymeric_vpc.cidr_block]
-  }
-
-  # Allow all outgoing traffic
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  tags = merge(local.tags, { "Name" = "security-group-https-fargate" })
+  tags = merge(local.tags, { "Name" = "security-group-fargate-api" })
 
   lifecycle {
     # Necessary if changing 'name' or 'name_prefix' properties.
     create_before_destroy = true
   }
+}
+
+resource "aws_security_group_rule" "allow_http" {
+  type              = "ingress"
+  description       = "Allow incoming HTTP traffic"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  cidr_blocks       = [aws_vpc.taxi_aymeric_vpc.cidr_block]
+  security_group_id = aws_security_group.security_group_fargate_api.id
+}
+
+resource "aws_security_group_rule" "allow_https" {
+  type              = "ingress"
+  description       = "Allow incoming HTTPS traffic"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = [aws_vpc.taxi_aymeric_vpc.cidr_block]
+  security_group_id = aws_security_group.security_group_fargate_api.id
+}
+
+resource "aws_security_group_rule" "allow_all_outgoing" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = aws_security_group.security_group_fargate_api.id
 }
 
 resource "aws_internet_gateway" "igw" {
