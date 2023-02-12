@@ -7,12 +7,12 @@ resource "aws_vpc" "taxi_aymeric_vpc" {
   tags = merge(local.tags, { "Name" = "taxi-aymeric-vpc" })
 }
 
-resource "aws_security_group" "security_group_fargate_api" {
-  name        = "security-group-fargate-api"
+resource "aws_security_group" "security_group_api_load_balancer" {
+  name        = "security-group-api-load-balancer"
   description = "Allow http and https inbound traffic"
   vpc_id      = aws_vpc.taxi_aymeric_vpc.id
 
-  tags = merge(local.tags, { "Name" = "security-group-fargate-api" })
+  tags = merge(local.tags, { "Name" = "security-group-api-load-balancer" })
 
   lifecycle {
     # Necessary if changing 'name' or 'name_prefix' properties.
@@ -26,8 +26,9 @@ resource "aws_security_group_rule" "allow_http" {
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
-  cidr_blocks       = [aws_vpc.taxi_aymeric_vpc.cidr_block]
-  security_group_id = aws_security_group.security_group_fargate_api.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = aws_security_group.security_group_api_load_balancer.id
 }
 
 resource "aws_security_group_rule" "allow_https" {
@@ -36,8 +37,9 @@ resource "aws_security_group_rule" "allow_https" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = [aws_vpc.taxi_aymeric_vpc.cidr_block]
-  security_group_id = aws_security_group.security_group_fargate_api.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = aws_security_group.security_group_api_load_balancer.id
 }
 
 resource "aws_security_group_rule" "allow_all_outgoing" {
@@ -47,7 +49,7 @@ resource "aws_security_group_rule" "allow_all_outgoing" {
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = aws_security_group.security_group_fargate_api.id
+  security_group_id = aws_security_group.security_group_api_load_balancer.id
 }
 
 resource "aws_internet_gateway" "igw" {
