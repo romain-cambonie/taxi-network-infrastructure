@@ -19,6 +19,13 @@ resource "aws_lb_target_group" "load_balancer_target_group_api" {
   protocol    = "HTTPS"
   vpc_id      = aws_vpc.taxi_aymeric_vpc.id
 
+  health_check {
+    path     = "/"
+    protocol = "HTTPS"
+    matcher  = "200"
+    port     = 443
+  }
+
   lifecycle {
     create_before_destroy = true
   }
