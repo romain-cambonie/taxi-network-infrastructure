@@ -97,15 +97,3 @@ resource "aws_route53_record" "driver_record_ipv6" {
     evaluate_target_health = false
   }
 }
-
-resource "aws_route53_record" "api_record" {
-  name    = "api.${aws_route53_zone.hosting_zone.name}"
-  zone_id = aws_route53_zone.hosting_zone.zone_id
-  type    = "A"
-
-  alias {
-    name                   = aws_lb.api_load_balancer.dns_name
-    zone_id                = aws_lb.api_load_balancer.zone_id
-    evaluate_target_health = false
-  }
-}
