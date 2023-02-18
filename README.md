@@ -92,7 +92,7 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
 - [AWS](https://aws.amazon.com/) est la plateforme de services Cloud proposée par Amazon.
   - Utilisateur : `taxi-aymeric.network.infrastructure`
   - Groupe : `network.deployer`
-- [Terraform Cloud](https://www.clever-cloud.com/) est la plateforme proposée par HasiCorp pour administrer les modifications d'infrastructure
+- [Terraform Cloud](https://app.terraform.io/) est la plateforme proposée par HashiCorp pour administrer les modifications d'infrastructure
   - Organisation : [taxi-aymeric](https://app.terraform.io/app/taxi-aymeric/workspaces)
   - Workspaces : `network-*`
     - [network-production](https://app.terraform.io/app/taxi-aymeric/workspaces/network-production)

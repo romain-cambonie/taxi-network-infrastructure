@@ -21,6 +21,7 @@ locals {
       team            = "romain-cambonie"
     }
   }
+  repository = "taxi-network-infrastructure"
 }
 
 locals {

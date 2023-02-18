@@ -97,3 +97,13 @@ resource "aws_route53_record" "driver_record_ipv6" {
     evaluate_target_health = false
   }
 }
+
+//resource aws_route53_record alb {
+//  allow_overwrite = true
+//  name            = local.dns_api
+//  type            = "CNAME"
+//  ttl             = 300
+//  zone_id         = data.aws_route53_zone.main.zone_id
+//  records         = [aws_lb.main.dns_name]
+//  provider        = aws.admin
+//}

@@ -10,6 +10,7 @@ locals {
     purpose-disaster_recovery         = local.product_information.purpose.disaster_recovery
     purpose-service_class             = local.product_information.purpose.service_class
     organization-client               = local.product_information.organization.client
+    repository                        = local.repository
     stakeholders-business_owner       = local.product_information.stakeholders.business_owner
     stakeholders-technical_owner      = local.product_information.stakeholders.technical_owner
     stakeholders-approver             = local.product_information.stakeholders.approver

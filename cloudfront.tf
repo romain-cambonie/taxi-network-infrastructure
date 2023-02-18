@@ -48,40 +48,36 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
 
   }
 
+  //  default_cache_behavior {
+  //    allowed_methods        = ["GET", "HEAD"]
+  //    cached_methods         = ["GET", "HEAD"]
+  //    compress               = true
+  //    default_ttl            = 7200
+  //    min_ttl                = 0
+  //    max_ttl                = 86400
+  //    target_origin_id       = local.s3_origin_id
+  //    viewer_protocol_policy = "redirect-to-https"
+  //
+  //    forwarded_values {
+  //      query_string = false
+  //
+  //      cookies {
+  //        forward = "none"
+  //      }
+  //    }
+  //  }
+
   default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    compress               = true
-    default_ttl            = 7200
-    min_ttl                = 0
-    max_ttl                = 86400
-    target_origin_id       = local.s3_origin_id
-    viewer_protocol_policy = "redirect-to-https"
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-  }
-
-  ordered_cache_behavior {
-    path_pattern           = "/api/*"
-    allowed_methods        = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "APIOrigin"
-    viewer_protocol_policy = "redirect-to-https"
-
-    forwarded_values {
-      query_string = true
-      headers      = ["Authorization", "Content-Type", "Origin"]
-
-      cookies {
-        forward = "all"
-      }
-    }
+    # Using the CachingDisabled managed policy ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policy-caching-disabled
+    # Using the CORS-CustomOrigin managed origin request policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
+    cache_policy_id = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    // path_pattern           = "/api/*"
+    allowed_methods          = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods           = ["HEAD", "GET"]
+    target_origin_id         = "APIOrigin"
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = true
+    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1"
   }
 
   restrictions {
