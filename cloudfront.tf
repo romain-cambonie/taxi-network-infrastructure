@@ -19,12 +19,12 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
 
   aliases = [local.domainName]
 
-  //  custom_error_response {
-  //    error_caching_min_ttl = 7200
-  //    error_code            = 404
-  //    response_code         = 200
-  //    response_page_path    = "/index.html"
-  //  }
+  custom_error_response {
+    error_caching_min_ttl = 7200
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/index.html"
+  }
 
   origin {
     domain_name = data.aws_s3_bucket.client.bucket_regional_domain_name
