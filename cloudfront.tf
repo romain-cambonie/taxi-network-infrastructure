@@ -76,6 +76,11 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
     viewer_protocol_policy   = "https-only"
     cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
     origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1"
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.remove_api_from_uri.arn
+    }
   }
 
   restrictions {
@@ -119,4 +124,16 @@ data "aws_iam_policy_document" "client_s3_policy" {
 resource "aws_s3_bucket_policy" "client" {
   bucket = data.aws_s3_bucket.client.id
   policy = data.aws_iam_policy_document.client_s3_policy.json
+}
+
+resource "aws_cloudfront_function" "remove_api_from_uri" {
+  name    = "rewrite-request-remove-api-from-uri"
+  runtime = "cloudfront-js-1.0"
+  code    = <<EOF
+function handler(event) {
+	var request = event.request;
+	request.uri = request.uri.replace(/\/api\//, "/");
+	return request;
+}
+EOF
 }
