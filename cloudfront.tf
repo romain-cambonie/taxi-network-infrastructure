@@ -11,6 +11,47 @@ locals {
   api_origin_id = "${var.product}_api"
 }
 
+resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
+  name = "taxi-gestion-security-headers-policy"
+
+  custom_headers_config {
+    items {
+      header   = "permissions-policy"
+      override = true
+      value    = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+    }
+  }
+
+  security_headers_config {
+    content_type_options {
+      override = true
+    }
+    frame_options {
+      frame_option = "DENY"
+      override     = true
+    }
+    referrer_policy {
+      referrer_policy = "same-origin"
+      override        = true
+    }
+    xss_protection {
+      mode_block = true
+      protection = true
+      override   = true
+    }
+    strict_transport_security {
+      access_control_max_age_sec = "63072000"
+      include_subdomains         = true
+      preload                    = true
+      override                   = true
+    }
+    content_security_policy {
+      content_security_policy = "default-src 'self'; font-src 'self'; img-src 'self'; object-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; trusted-types angular angular#bundler dompurify; require-trusted-types-for 'script';"
+      override                = true
+    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "taxi_aymeric" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -63,19 +104,23 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
         forward = "none"
       }
     }
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.security_headers_policy.id
+
   }
 
   ordered_cache_behavior {
     # Using the CachingDisabled managed policy ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policy-caching-disabled
     # Using the CORS-CustomOrigin managed origin request policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
-    path_pattern             = "/api/*"
-    allowed_methods          = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
-    cached_methods           = ["HEAD", "GET"]
-    target_origin_id         = local.api_origin_id
-    compress                 = true
-    viewer_protocol_policy   = "https-only"
-    cache_policy_id          = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
-    origin_request_policy_id = "59781a5b-3903-41f3-afcb-af62929ccde1"
+    # Using the CORS-with-preflight-and-SecurityHeadersPolicy  managed response headers policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
+    path_pattern               = "/api/*"
+    allowed_methods            = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods             = ["HEAD", "GET"]
+    target_origin_id           = local.api_origin_id
+    compress                   = true
+    viewer_protocol_policy     = "https-only"
+    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
+    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1"
+    response_headers_policy_id = "eaab4381-ed33-4a86-88ca-d9558dc6cd63"
 
     function_association {
       event_type   = "viewer-request"
