@@ -55,13 +55,13 @@ resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
 resource "aws_cloudfront_response_headers_policy" "response_headers_policy_api" {
   name = "taxi-gestion-response-headers-policy-api"
 
-  //  custom_headers_config {
-  //    items {
-  //      header   = "permissions-policy"
-  //      override = true
-  //      value    = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
-  //    }
-  //  }
+  custom_headers_config {
+    items {
+      header   = "permissions-policy"
+      override = true
+      value    = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+    }
+  }
 
   security_headers_config {
     content_type_options {
@@ -86,10 +86,10 @@ resource "aws_cloudfront_response_headers_policy" "response_headers_policy_api" 
       preload                    = true
       override                   = true
     }
-    //    content_security_policy {
-    //      content_security_policy = "default-src 'self';"
-    //      override                = false
-    //    }
+    content_security_policy {
+      content_security_policy = "default-src 'self';"
+      override                = false
+    }
   }
 }
 
