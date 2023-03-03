@@ -57,6 +57,7 @@ resource "aws_apigatewayv2_route" "my_route" {
 
   authorization_type = "JWT"
   authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
+
 }
 
 resource "aws_apigatewayv2_integration" "my_integration" {
@@ -64,12 +65,22 @@ resource "aws_apigatewayv2_integration" "my_integration" {
   integration_type = "HTTP_PROXY"
 
   integration_method = "ANY"
-  connection_type    = "INTERNET"
-  integration_uri    = "http://api-load-balancer-2041841513.us-east-1.elb.amazonaws.com"
+  connection_type    = "VPC_LINK"
+  connection_id      = aws_apigatewayv2_vpc_link.vpc_link.id
+  integration_uri    = aws_lb_listener.api_listener_redirect_https.arn
+
 }
 
 resource "aws_apigatewayv2_deployment" "my_deployment" {
   api_id = aws_apigatewayv2_api.taxi.id
 
   depends_on = [aws_apigatewayv2_route.my_route]
+}
+
+resource "aws_apigatewayv2_vpc_link" "vpc_link" {
+  name               = "vpc-link-taxi-aymeric"
+  security_group_ids = [aws_security_group.security_group_api_load_balancer.id]
+  subnet_ids         = [aws_subnet.public_1.id, aws_subnet.public_2.id]
+
+  tags = local.tags
 }

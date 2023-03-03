@@ -1,11 +1,11 @@
 resource "aws_lb" "api_load_balancer" {
   name               = "api-load-balancer"
-  internal           = false
+  internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.security_group_api_load_balancer.id]
   subnets            = [aws_subnet.public_1.id, aws_subnet.public_2.id]
 
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   tags = {
     Environment = "production"
