@@ -1,6 +1,8 @@
 resource "aws_apigatewayv2_api" "taxi" {
   name          = "${var.product}-${var.service}"
   protocol_type = "HTTP"
+
+  disable_execute_api_endpoint = true
 }
 
 resource "aws_apigatewayv2_stage" "taxi_api" {
@@ -27,11 +29,34 @@ resource "aws_apigatewayv2_stage" "taxi_api" {
   //  }
 }
 
+data "aws_cognito_user_pools" "taxi-aymeric-user-pool" {
+  name = "taxi-aymeric-user-pool"
+}
+
+data "aws_cognito_user_pool_clients" "taxi-aymeric-user-pool-client" {
+  user_pool_id = tolist(data.aws_cognito_user_pools.taxi-aymeric-user-pool.ids)[0]
+}
+
+resource "aws_apigatewayv2_authorizer" "cognito_authorizer" {
+  api_id           = aws_apigatewayv2_api.taxi.id
+  name             = "cognito-authorizer"
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+
+  jwt_configuration {
+    issuer   = "https://cognito-idp.us-east-1.amazonaws.com/${tolist(data.aws_cognito_user_pools.taxi-aymeric-user-pool.ids)[0]}"
+    audience = [data.aws_cognito_user_pool_clients.taxi-aymeric-user-pool-client.id]
+  }
+}
+
 resource "aws_apigatewayv2_route" "my_route" {
   api_id    = aws_apigatewayv2_api.taxi.id
   route_key = "$default"
 
   target = "integrations/${aws_apigatewayv2_integration.my_integration.id}"
+
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
 }
 
 resource "aws_apigatewayv2_integration" "my_integration" {

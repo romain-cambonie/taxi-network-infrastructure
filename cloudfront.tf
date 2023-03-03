@@ -152,7 +152,6 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
   ordered_cache_behavior {
     # Using the CachingDisabled managed policy ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policy-caching-disabled
     # Using the CORS-CustomOrigin managed origin request policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
-    # Using the CORS-with-preflight-and-SecurityHeadersPolicy  managed response headers policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html#managed-response-headers-policies-security
     path_pattern               = "/api/*"
     allowed_methods            = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods             = ["HEAD", "GET"]
