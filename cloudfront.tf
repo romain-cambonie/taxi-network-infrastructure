@@ -52,6 +52,47 @@ resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
   }
 }
 
+resource "aws_cloudfront_response_headers_policy" "response_headers_policy_api" {
+  name = "taxi-gestion-response-headers-policy-api"
+
+  //  custom_headers_config {
+  //    items {
+  //      header   = "permissions-policy"
+  //      override = true
+  //      value    = "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+  //    }
+  //  }
+
+  security_headers_config {
+    content_type_options {
+      override = true
+    }
+    frame_options {
+      frame_option = "DENY"
+      override     = true
+    }
+    referrer_policy {
+      referrer_policy = "strict-origin-when-cross-origin"
+      override        = true
+    }
+    xss_protection {
+      mode_block = true
+      protection = true
+      override   = true
+    }
+    strict_transport_security {
+      access_control_max_age_sec = "63072000"
+      include_subdomains         = true
+      preload                    = true
+      override                   = true
+    }
+    //    content_security_policy {
+    //      content_security_policy = "default-src 'self';"
+    //      override                = false
+    //    }
+  }
+}
+
 resource "aws_cloudfront_distribution" "taxi_aymeric" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -120,7 +161,7 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
     viewer_protocol_policy     = "https-only"
     cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
     origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1"
-    response_headers_policy_id = "eaab4381-ed33-4a86-88ca-d9558dc6cd63"
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy_api.id
 
     function_association {
       event_type   = "viewer-request"
