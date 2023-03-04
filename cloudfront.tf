@@ -11,6 +11,29 @@ locals {
   api_origin_id = "${var.product}_api"
 }
 
+//resource "aws_cloudfront_cache_policy" "api_cache_policy" {
+//  name        = "example-policy"
+//  comment     = "test comment"
+//  default_ttl = 0
+//  max_ttl     = 0
+//  min_ttl     = 0
+//
+//  parameters_in_cache_key_and_forwarded_to_origin {
+//    cookies_config {
+//      cookie_behavior = "none"
+//    }
+//    headers_config {
+//      header_behavior = "whitelist"
+//      headers {
+//        items = ["Authorization"]
+//      }
+//    }
+//    query_strings_config {
+//      query_string_behavior = "all"
+//    }
+//  }
+//}
+
 resource "aws_cloudfront_response_headers_policy" "security_headers_policy" {
   name = "taxi-gestion-security-headers-policy"
 
@@ -128,6 +151,7 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
       origin_protocol_policy = "https-only"
       origin_ssl_protocols   = ["TLSv1.2"]
     }
+
   }
 
   default_cache_behavior {
@@ -151,15 +175,15 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
 
   ordered_cache_behavior {
     # Using the CachingDisabled managed policy ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-policy-caching-disabled
-    # Using the CORS-CustomOrigin managed origin request policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
+    # Using the AllViewerExceptHostHeader managed origin request policies ID: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
     path_pattern               = "/api/*"
     allowed_methods            = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
     cached_methods             = ["HEAD", "GET"]
     target_origin_id           = local.api_origin_id
     compress                   = true
-    viewer_protocol_policy     = "https-only"
-    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad"
-    origin_request_policy_id   = "59781a5b-3903-41f3-afcb-af62929ccde1"
+    viewer_protocol_policy     = "redirect-to-https"
+    cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" //aws_cloudfront_cache_policy.api_cache_policy.id
+    origin_request_policy_id   = "b689b0a8-53d0-40ab-baf2-68738e2966ac" //"59781a5b-3903-41f3-afcb-af62929ccde1"
     response_headers_policy_id = aws_cloudfront_response_headers_policy.response_headers_policy_api.id
 
     function_association {

@@ -2,7 +2,7 @@ resource "aws_apigatewayv2_api" "taxi" {
   name          = "${var.product}-${var.service}"
   protocol_type = "HTTP"
 
-  disable_execute_api_endpoint = true
+  disable_execute_api_endpoint = false
 }
 
 resource "aws_apigatewayv2_stage" "taxi_api" {
@@ -55,8 +55,8 @@ resource "aws_apigatewayv2_route" "my_route" {
 
   target = "integrations/${aws_apigatewayv2_integration.my_integration.id}"
 
-  authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  //authorization_type = "JWT"
+  //authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
 
 }
 
