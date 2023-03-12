@@ -56,8 +56,8 @@ resource "aws_apigatewayv2_route" "my_route" {
 
   target = "integrations/${aws_apigatewayv2_integration.my_integration.id}"
 
-  //authorization_type = "JWT"
-  //authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito_authorizer.id
 
 }
 
