@@ -20,9 +20,9 @@ resource "aws_security_group" "security_group_api_load_balancer" {
   }
 }
 
-resource "aws_security_group_rule" "allow_http" {
+resource "aws_security_group_rule" "allow_http_from_api_gateway" {
   type              = "ingress"
-  description       = "Allow incoming HTTP traffic"
+  description       = "Allow incoming HTTP traffic from anyone"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
@@ -31,24 +31,14 @@ resource "aws_security_group_rule" "allow_http" {
   security_group_id = aws_security_group.security_group_api_load_balancer.id
 }
 
-resource "aws_security_group_rule" "allow_https" {
-  type              = "ingress"
-  description       = "Allow incoming HTTPS traffic"
-  from_port         = 443
-  to_port           = 443
+// TODO Restrict to ecs service
+resource "aws_security_group_rule" "allow_outgoing_to_ecs_service" {
+  description       = "Load balancer to target service"
+  type              = "egress"
+  from_port         = 80
+  to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
-  security_group_id = aws_security_group.security_group_api_load_balancer.id
-}
-
-resource "aws_security_group_rule" "allow_all_outgoing" {
-  type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  cidr_blocks       = ["0.0.0.0/0"]
-  ipv6_cidr_blocks  = ["::/0"]
   security_group_id = aws_security_group.security_group_api_load_balancer.id
 }
 
