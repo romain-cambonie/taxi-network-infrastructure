@@ -36,6 +36,15 @@ resource "aws_lb_listener" "api_listener_http" {
   port              = "80"
   protocol          = "HTTP"
 
+  //  default_action {
+  //    type = "fixed-response"
+  //
+  //    fixed_response {
+  //      content_type = "application/json"
+  //      message_body = "{ message: Progress Baby }"
+  //      status_code  = "200"
+  //    }
+  //  }
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.load_balancer_target_group_api.arn

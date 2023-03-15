@@ -143,7 +143,6 @@ resource "aws_cloudfront_distribution" "taxi_aymeric" {
   origin {
     domain_name = replace(aws_apigatewayv2_api.taxi.api_endpoint, "/^https?://([^/]*).*/", "$1")
     origin_id   = local.api_origin_id
-    origin_path = "/production"
 
     custom_origin_config {
       http_port              = 80
