@@ -1,5 +1,16 @@
 name: 'Terraform'
 on:
+  workflow_call:
+    inputs:
+      tfvar:
+        required: false
+        type: string
+        default: ''
+
+    secrets:
+      TF_API_TOKEN:
+        required: true
+
   workflow_dispatch:
   push:
     branches:
@@ -12,26 +23,34 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          repository: romain-cambonie/taxi-network-infrastructure
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
+
       - name: Terraform Init
         id: init
         run: terraform init
         env:
           TF_WORKSPACE: production
+
       - name: Terraform Validate
         id: validate
         run: terraform validate -no-color
+
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
         run: terraform plan -no-color -input=false
         continue-on-error: true
+
       - name: Update Pull Request
         uses: actions/github-script@v6.0.0
         if: github.event_name == 'pull_request'
@@ -61,11 +80,13 @@ jobs:
               repo: context.repo.repo,
               body: output
             })
+
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_call')
+        run: terraform apply -auto-approve -input=false ${{ inputs.tfvar }}
         env:
           TF_WORKSPACE: production

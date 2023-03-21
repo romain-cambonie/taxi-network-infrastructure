@@ -108,3 +108,10 @@ resource "aws_route_table_association" "public_2_route_association" {
   subnet_id      = aws_subnet.public_2.id
   route_table_id = aws_route_table.public_route_table.id
 }
+
+# Open connexion for the migration data transfer
+resource "aws_route_table_association" "route_association_open_rds" {
+  count          = var.openRdsToPublicInternet ? 1 : 0
+  subnet_id      = aws_subnet.private_1.id
+  route_table_id = aws_route_table.public_route_table.id
+}

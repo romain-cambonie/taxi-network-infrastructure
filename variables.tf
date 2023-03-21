@@ -11,3 +11,9 @@ variable "service" {
   description = "The name of the service that will be run on the environment"
   default     = "infrastructure"
 }
+
+variable "openRdsToPublicInternet" {
+  type     = bool
+  nullable = false
+  default  = false
+}
