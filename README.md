@@ -2,9 +2,7 @@
 
 ## À propos
 
-Network infrastructure décrit par le code l'infrastructure à provisionner pour les éléments réseaux de Taxi Aymeric.
-
-> Ce dépôt n'est pas utile pour faire fonctionner la Cartographie Nationale en local.
+Network infrastructure décrit par le code l'infrastructure à provisionner pour les éléments réseaux de Taxi Gestion.
 
 ## Table des matières
 
@@ -85,7 +83,7 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
 - [Github Actions](https://docs.github.com/en/actions) est l'outil d'intégration et de déploiement continu intégré à GitHub
   - L'historique des déploiements est disponible [sous l'onglet Actions](https://github.com/romain-cambonie/taxi-network-infrastructure/actions/)
 - Secrets du dépôt :
-  - `TF_API_TOKEN` : Le token d'api Terraform Cloud de l'équipe Cartographie Nationale qui permet à la CI d'opérer des actions sur Terraform Cloud
+  - `TF_API_TOKEN` : Le token d'api Terraform Cloud qui permet à la CI d'opérer des actions sur Terraform Cloud
 
 #### Déploiement
 
@@ -93,7 +91,7 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
   - Utilisateur : `taxi-aymeric.network.infrastructure`
   - Groupe : `network.deployer`
 - [Terraform Cloud](https://app.terraform.io/) est la plateforme proposée par HashiCorp pour administrer les modifications d'infrastructure
-  - Organisation : [taxi-aymeric](https://app.terraform.io/app/taxi-aymeric/workspaces)
+  - Organisation : [taxi-gestion](https://app.terraform.io/app/taxi-aymeric/workspaces)
   - Workspaces : `network-*`
     - [network-production](https://app.terraform.io/app/taxi-aymeric/workspaces/network-production)
   - Variables
