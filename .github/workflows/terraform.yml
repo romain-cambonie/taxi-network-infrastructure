@@ -47,6 +47,8 @@ jobs:
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
-        run: terraform apply -auto-approve -input=false ${{ inputs.tfvar }}
+        run: |
+          echo ${{ inputs.tfvar }} > openrds.auto.tfvars
+          terraform apply -auto-approve -input=false
         env:
           TF_WORKSPACE: production
